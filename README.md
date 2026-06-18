@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ascend
 
-## Getting Started
+A dark-mode, brutalist-inspired web app for aesthetic optimization and peer-to-peer
+advice. Built with **Next.js 16 (App Router)**, **Tailwind CSS v4**, **Supabase**,
+**Google Gemini / OpenAI**, **PeerJS (WebRTC)**, and **Stripe**.
 
-First, run the development server:
+Every integration is optional — the app boots and degrades gracefully, surfacing a
+"connect this service" state wherever a key is missing.
+
+## Features
+
+1. **Auth & Profiles** — Supabase Auth (Google + email/password), optional TOTP 2FA
+   (off by default), username, avatar upload, and a dark/light theme toggle (dark by
+   default, persisted to the profile).
+2. **AI Face Analyzer** — Upload a photo and/or type a prompt. Returns a PSL /10
+   rating, per-feature sub-scores, genuine strengths, and a prioritized, evidence-based
+   ascension plan. Free tier uses Gemini; premium routes to OpenAI.
+3. **Meeting Room** — Omegle-style random video pairing over PeerJS WebRTC with a
+   small matchmaking signaling server. Start / Next / Stop, mic & camera toggles, and
+   an Add Friend button (prompts login if signed out).
+4. **Premium** — Stripe Checkout subscription. A successful purchase flips
+   `is_premium = true` via webhook, which upgrades the user's AI model.
+
+## Tech stack
+
+- Next.js 16 (App Router, Turbopack, `proxy.ts` convention)
+- Tailwind CSS v4 with CSS-variable theming
+- Supabase (`@supabase/ssr`) for auth, Postgres, and avatar storage
+- `@google/generative-ai` (standard tier) and `openai` (premium tier)
+- PeerJS + `ws` matchmaking server (`server/index.mjs`)
+- Stripe Checkout + webhooks
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # fill in whatever you have
+npm run dev                  # Next.js app on http://localhost:3000
+npm run server               # matchmaking/PeerJS server on :3001 (separate terminal)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+See `.env.example` for the full, documented list. Nothing is required to boot; add
+keys to light up each feature:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Supabase**: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+  `SUPABASE_SERVICE_ROLE_KEY`
+- **AI**: `GOOGLE_GENERATIVE_AI_API_KEY` (free), `OPENAI_API_KEY` (premium);
+  models are configurable via `AI_STANDARD_MODEL` / `AI_PREMIUM_MODEL`
+- **Stripe**: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+  `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_PRICE_ID`
+- **Meeting**: `NEXT_PUBLIC_MATCHMAKING_URL` (+ optional `NEXT_PUBLIC_PEER_*`)
 
-## Learn More
+> The model names are deliberately env-configurable. "Claude Opus 4.8" / "GPT-5.5"
+> referenced in the brief don't exist yet — set `AI_PREMIUM_MODEL` to whatever
+> frontier model you want once it's available, no code change required.
 
-To learn more about Next.js, take a look at the following resources:
+### Supabase setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run [`supabase/schema.sql`](./supabase/schema.sql) in your project's SQL editor. It
+creates the `profiles` and `friendships` tables, RLS policies, a profile-on-signup
+trigger, and a public `avatars` storage bucket. For Google OAuth, add
+`<site>/auth/callback` as a redirect URL in the Supabase Auth settings.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Stripe setup
 
-## Deploy on Vercel
+1. Create a recurring **Price** and set `STRIPE_PRICE_ID`.
+2. Point a webhook at `<site>/api/stripe/webhook` for
+   `checkout.session.completed`, `customer.subscription.updated`, and
+   `customer.subscription.deleted`; set `STRIPE_WEBHOOK_SECRET`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Next.js dev server |
+| `npm run build` | Production build |
+| `npm run server` | Matchmaking + PeerJS signaling server |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+
+## Project layout
+
+```
+src/
+  app/            routes (home, login, analyzer, meeting, premium, profile) + api/
+  components/     shell (nav), providers, ui, and feature components
+  lib/            env, types, utils, supabase clients, ai router, stripe helpers
+  proxy.ts        session refresh + protected-route guard (Next 16 proxy)
+server/index.mjs  Express + ws matchmaking and PeerJS signaling
+supabase/         schema.sql
+```
