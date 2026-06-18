@@ -2,7 +2,7 @@
 
 A dark-mode, brutalist-inspired web app for aesthetic optimization and peer-to-peer
 advice. Built with **Next.js 16 (App Router)**, **Tailwind CSS v4**, **Supabase**,
-**Google Gemini / OpenAI**, **PeerJS (WebRTC)**, and **Stripe**.
+**Google Gemini / Z.ai (GLM) / Anthropic / OpenAI**, **PeerJS (WebRTC)**, and **Stripe**.
 
 Every integration is optional — the app boots and degrades gracefully, surfacing a
 "connect this service" state wherever a key is missing.
@@ -14,7 +14,8 @@ Every integration is optional — the app boots and degrades gracefully, surfaci
    default, persisted to the profile).
 2. **AI Face Analyzer** — Upload a photo and/or type a prompt. Returns a PSL /10
    rating, per-feature sub-scores, genuine strengths, and a prioritized, evidence-based
-   ascension plan. Free tier uses Gemini; premium routes to OpenAI.
+   ascension plan. Free tier uses Gemini; premium tries Z.ai (GLM) → Anthropic (Claude)
+   → OpenAI, in configurable order.
 3. **Meeting Room** — Omegle-style random video pairing over PeerJS WebRTC with a
    small matchmaking signaling server. Start / Next / Stop, mic & camera toggles, and
    an Add Friend button (prompts login if signed out).
@@ -26,7 +27,8 @@ Every integration is optional — the app boots and degrades gracefully, surfaci
 - Next.js 16 (App Router, Turbopack, `proxy.ts` convention)
 - Tailwind CSS v4 with CSS-variable theming
 - Supabase (`@supabase/ssr`) for auth, Postgres, and avatar storage
-- `@google/generative-ai` (standard tier) and `openai` (premium tier)
+- `@google/generative-ai` (free tier); `openai` (OpenAI + OpenAI-compatible Z.ai GLM)
+  and `@anthropic-ai/sdk` (Claude) for the premium tier
 - PeerJS + `ws` matchmaking server (`server/index.mjs`)
 - Stripe Checkout + webhooks
 
@@ -46,15 +48,18 @@ keys to light up each feature:
 
 - **Supabase**: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
   `SUPABASE_SERVICE_ROLE_KEY`
-- **AI**: `GOOGLE_GENERATIVE_AI_API_KEY` (free), `OPENAI_API_KEY` (premium);
-  models are configurable via `AI_STANDARD_MODEL` / `AI_PREMIUM_MODEL`
+- **AI (free)**: `GOOGLE_GENERATIVE_AI_API_KEY`; model via `AI_STANDARD_MODEL`
+- **AI (premium)**: set `AI_PREMIUM_PROVIDER` (`zai` | `anthropic` | `openai`) to pick the
+  primary, then provide any of `ZAI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`. The
+  analysis tries the primary first, then the others, with OpenAI as the final fallback.
+  Per-provider models: `AI_ZAI_MODEL`, `AI_ANTHROPIC_MODEL`, `AI_OPENAI_MODEL`
 - **Stripe**: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
   `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_PRICE_ID`
 - **Meeting**: `NEXT_PUBLIC_MATCHMAKING_URL` (+ optional `NEXT_PUBLIC_PEER_*`)
 
-> The model names are deliberately env-configurable. "Claude Opus 4.8" / "GPT-5.5"
-> referenced in the brief don't exist yet — set `AI_PREMIUM_MODEL` to whatever
-> frontier model you want once it's available, no code change required.
+> The model ids are deliberately env-configurable. Names like "Claude Opus 4.8",
+> "GLM-5.2", or "GPT-5.5" from the brief may not be valid API identifiers yet — set the
+> `AI_*_MODEL` vars to whatever ids your providers accept, no code change required.
 
 ### Supabase setup
 

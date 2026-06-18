@@ -11,7 +11,7 @@ const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 export async function POST(req: Request) {
   if (!isAnyAiConfigured) {
     return NextResponse.json(
-      { error: "AI is not configured. Add a Gemini or OpenAI API key." },
+      { error: "AI is not configured. Add a Gemini (free) or premium (Z.ai / Anthropic / OpenAI) API key." },
       { status: 503 },
     );
   }
