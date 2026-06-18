@@ -13,7 +13,7 @@ export const env = {
 
   // Standard (free) tier provider.
   geminiApiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-  aiStandardModel: process.env.AI_STANDARD_MODEL || "gemini-2.0-flash",
+  aiStandardModel: process.env.AI_STANDARD_MODEL || "gemini-2.5-flash",
 
   // Premium tier providers. The premium analysis tries `aiPremiumProvider`
   // first, then the remaining configured providers, with OpenAI as the
