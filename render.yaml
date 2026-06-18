@@ -1,0 +1,15 @@
+# Render Blueprint for the Ascend Meeting Room signaling server.
+# Hosts PeerJS (WebRTC signaling) at /peerjs and Omegle-style matchmaking
+# over a WebSocket at /match, with a health check at /health.
+# Deploy: https://render.com → New → Blueprint → connect this repo.
+services:
+  - type: web
+    name: ascend-matchmaking
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/index.mjs
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
