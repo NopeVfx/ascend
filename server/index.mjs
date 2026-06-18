@@ -12,12 +12,40 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 
 const server = http.createServer(app);
 
-// PeerJS (WebRTC signaling) mounted at /peerjs
-const peerServer = ExpressPeerServer(server, { path: "/" });
+// Both PeerJS and the matchmaking socket run on this one HTTP server. We give
+// each a `noServer` WebSocketServer and route HTTP upgrades by path ourselves,
+// because letting two `ws` servers bind the same server makes each reject (400)
+// upgrades that don't match its own path, killing the shared socket.
+
+// PeerJS (WebRTC signaling) mounted at /peerjs (optional self-hosted signaling;
+// the client uses the public PeerJS cloud unless NEXT_PUBLIC_PEER_HOST is set).
+const peerWss = new WebSocketServer({ noServer: true });
+const peerServer = ExpressPeerServer(server, {
+  path: "/",
+  createWebSocketServer: () => peerWss,
+});
 app.use("/peerjs", peerServer);
 
 // Omegle-style matchmaking over a plain WebSocket at /match
-const wss = new WebSocketServer({ server, path: "/match" });
+const wss = new WebSocketServer({ noServer: true });
+
+server.on("upgrade", (req, socket, head) => {
+  let pathname = "/";
+  try {
+    pathname = new URL(req.url ?? "/", "http://localhost").pathname;
+  } catch {
+    pathname = "/";
+  }
+  if (pathname === "/match") {
+    wss.handleUpgrade(req, socket, head, (ws) => wss.emit("connection", ws, req));
+  } else if (pathname.startsWith("/peerjs")) {
+    peerWss.handleUpgrade(req, socket, head, (ws) =>
+      peerWss.emit("connection", ws, req),
+    );
+  } else {
+    socket.destroy();
+  }
+});
 
 /** @type {import('ws').WebSocket | null} */
 let waiting = null;
