@@ -23,7 +23,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const NO_FLASH = `try{var t=localStorage.getItem('ascend-theme');if(t==='light'){document.documentElement.classList.remove('dark');}else{document.documentElement.classList.add('dark');}}catch(e){document.documentElement.classList.add('dark');}`;
+const NO_FLASH = `(function(){try{var t=localStorage.getItem('ascend-theme')||'dark';var p='default',m;if(t==='system'){m=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}else if(t==='light'||t==='dark'){m=t;}else{var i=t.lastIndexOf('-');if(i>0){p=t.slice(0,i);m=t.slice(i+1);}else{m='dark';}}var r=document.documentElement;r.setAttribute('data-theme',p);if(m==='dark'){r.classList.add('dark');}else{r.classList.remove('dark');}}catch(e){var r=document.documentElement;r.setAttribute('data-theme','default');r.classList.add('dark');}})();`;
 
 export default function RootLayout({
   children,
