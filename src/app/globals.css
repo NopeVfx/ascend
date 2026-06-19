@@ -1,104 +1,56 @@
-@import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #f4f4f4;
-  --surface: #ffffff;
-  --surface-2: #ececec;
-  --border: #d0d0d0;
-  --foreground: #0a0a0a;
-  --muted: #565656;
-  --accent: #1d4ed8;
-  --accent-fg: #ffffff;
-  --lime: #4d7c0f;
-  --danger: #dc2626;
-}
-
-.dark {
   --background: #0a0a0a;
-  --surface: #111111;
-  --surface-2: #181818;
-  --border: #2a2a2a;
   --foreground: #ededed;
-  --muted: #8a8a8a;
-  --accent: #3b82f6;
-  --accent-fg: #0a0a0a;
-  --lime: #a3e635;
-  --danger: #f87171;
+  --accent: #00ff00;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-border: var(--border);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-fg: var(--accent-fg);
-  --color-lime: var(--lime);
-  --color-danger: var(--danger);
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
-    monospace;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-}
-
-* {
-  border-color: var(--border);
-}
-
-html {
-  color-scheme: light dark;
-}
+/* Advanced Theme Overrides */
+[data-theme="catppuccin"].dark { --background: #1e1e2e; --foreground: #cdd6f4; --accent: #f5c2e7; }
+[data-theme="gruvbox"].dark { --background: #282828; --foreground: #ebdbb2; --accent: #fabd2f; }
+[data-theme="everforest"].dark { --background: #2d353b; --foreground: #d3c6aa; --accent: #a7c080; }
+[data-theme="nord"].dark { --background: #2e3440; --foreground: #d8dee9; --accent: #88c0d0; }
+[data-theme="onedark"].dark { --background: #282c34; --foreground: #abb2bf; --accent: #61afef; }
+[data-theme="tokyonight"].dark { --background: #1a1b26; --foreground: #c0caf5; --accent: #7aa2f7; }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mono);
-  -webkit-font-smoothing: antialiased;
+  font-family: 'Inter', sans-serif;
 }
 
-/* Brutalist primitives */
-.brut-border {
-  border: 2px solid var(--border);
+/* Bubbly UI & Glows */
+.btn-bubbly {
+  border-radius: 16px; /* Medium rounding */
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
-.brut-card {
-  background: var(--surface);
-  border: 2px solid var(--border);
+.btn-bubbly:hover {
+  box-shadow: 0 0 15px var(--accent); /* Border glow */
+  transform: translateY(-2px);
 }
 
-.brut-shadow {
-  box-shadow: 4px 4px 0 0 var(--border);
+.btn-bubbly:active {
+  transform: scale(0.96); /* Click animation */
+  box-shadow: 0 0 5px var(--accent);
 }
 
-.brut-shadow-accent {
-  box-shadow: 4px 4px 0 0 var(--accent);
+.card-bubbly {
+  border-radius: 20px;
+  border: 1px solid #333;
+  transition: all 0.3s ease;
 }
 
-.uppercase-wide {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.card-bubbly:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
 }
 
-::selection {
-  background: var(--accent);
-  color: var(--accent-fg);
-}
-
-/* Custom scrollbar for the brutalist look */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border: 2px solid var(--background);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
