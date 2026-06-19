@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client"; // Make sure this path matches your project
+import { createClient } from "@/lib/supabase/client";
 import {
   ArrowRight,
   Crown,
@@ -45,13 +45,20 @@ const STEPS = [
 ];
 
 export default function HomePage() {
-  const supabase = createClient();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getUserData = async () => {
+      const supabase = createClient();
+      
+      // Safety check inside the async function to satisfy TypeScript
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
@@ -69,19 +76,22 @@ export default function HomePage() {
 
     getUserData();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user || null);
-        if (!session?.user) {
-          setProfile(null);
+    const supabase = createClient();
+    if (supabase) {
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        (_event, session) => {
+          setUser(session?.user || null);
+          if (!session?.user) {
+            setProfile(null);
+          }
         }
-      }
-    );
+      );
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase]);
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -96,6 +106,7 @@ export default function HomePage() {
     return (
       <div className="mx-auto w-full max-w-5xl px-4 py-10 md:px-8 md:py-16">
         <div className="card-bubbly bg-surface p-8 mb-8 flex items-center gap-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src={profile?.avatar_url || "https://via.placeholder.com/80"} 
             alt="Avatar" 
