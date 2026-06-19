@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Notice } from "@/components/ui/Notice";
 import { TwoFactor } from "@/components/profile/TwoFactor";
 import { Friends } from "@/components/profile/Friends";
+import { ThemePicker } from "@/components/ThemePicker";
 import { initialsFromName } from "@/lib/utils";
 import type { Theme } from "@/lib/types";
 
@@ -21,7 +22,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-2 border-border bg-surface p-5">
+    <section className="rounded-2xl border-2 border-border bg-surface p-5 glow-border">
       <h2 className="mb-4 text-sm font-black uppercase-wide text-muted">
         {title}
       </h2>
@@ -61,11 +62,11 @@ export function ProfileSettings() {
 
   if (!user) {
     return (
-      <div className="border-2 border-border bg-surface p-8 text-center">
+      <div className="rounded-2xl border-2 border-border bg-surface p-8 text-center glow-border">
         <p className="text-sm text-muted">Log in to manage your profile.</p>
         <Link
           href="/login?redirect=/profile"
-          className="mt-4 inline-block border-2 border-accent bg-accent px-6 py-3 text-sm font-bold uppercase-wide text-accent-fg"
+          className="btn-bubbly mt-4 inline-block rounded-xl border-2 border-accent bg-accent px-6 py-3 text-sm font-bold uppercase-wide text-accent-fg glow-border-hover"
         >
           Log in
         </Link>
@@ -119,7 +120,7 @@ export function ProfileSettings() {
     }
   }
 
-  async function changeTheme(next: Theme) {
+  async function changeTheme(next: string) {
     setTheme(next);
     if (supabase && user) {
       await supabase.from("profiles").update({ theme: next }).eq("id", user.id);
@@ -143,7 +144,7 @@ export function ProfileSettings() {
 
       <Section title="Account">
         <div className="flex items-center gap-4">
-          <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border-2 border-border bg-surface-2 text-lg font-black">
+          <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-border bg-surface-2 text-lg font-black glow-border">
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -189,7 +190,7 @@ export function ProfileSettings() {
             ref={usernameRef}
             defaultValue={profile?.username ?? ""}
             placeholder="Username"
-            className="flex-1 border-2 border-border bg-background px-4 py-2.5 outline-none focus:border-accent"
+            className="flex-1 rounded-xl border-2 border-border bg-background px-4 py-2.5 outline-none focus:border-accent glow-border-hover"
           />
           <Button onClick={saveUsername} disabled={saving}>
             {saving ? <Loader2 className="animate-spin" size={16} /> : "Save"}
@@ -198,30 +199,7 @@ export function ProfileSettings() {
       </Section>
 
       <Section title="Appearance">
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => changeTheme("dark")}
-            className={`flex items-center justify-center gap-2 border-2 px-4 py-3 text-sm font-bold uppercase-wide ${
-              theme === "dark"
-                ? "border-accent bg-accent text-accent-fg"
-                : "border-border text-muted hover:text-foreground"
-            }`}
-          >
-            <Moon size={16} /> Dark
-          </button>
-          <button
-            type="button"
-            onClick={() => changeTheme("light")}
-            className={`flex items-center justify-center gap-2 border-2 px-4 py-3 text-sm font-bold uppercase-wide ${
-              theme === "light"
-                ? "border-accent bg-accent text-accent-fg"
-                : "border-border text-muted hover:text-foreground"
-            }`}
-          >
-            <Sun size={16} /> Light
-          </button>
-        </div>
+        <ThemePicker value={theme} onChange={changeTheme} />
       </Section>
 
       <Section title="Security">

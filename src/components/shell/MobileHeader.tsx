@@ -6,9 +6,9 @@ import { ThemeToggle } from "@/components/shell/ThemeToggle";
 
 export function MobileHeader() {
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between border-b-2 border-border bg-surface px-4 py-3 md:hidden">
-      <Link href="/" className="flex items-center gap-2">
-        <span className="flex h-7 w-7 items-center justify-center bg-accent text-xs font-black text-accent-fg">
+    <header className="sticky top-0 z-30 flex items-center justify-between rounded-b-2xl border-b-2 border-border bg-surface px-4 py-3 shadow-[0_4px_14px_0_color-mix(in_srgb,var(--foreground)_5%,transparent)] md:hidden">
+      <Link href="/" className="btn-bubbly flex items-center gap-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-xs font-black text-accent-fg glow-border">
           A
         </span>
         <span className="text-base font-black uppercase-wide">Ascend</span>
@@ -16,7 +16,7 @@ export function MobileHeader() {
       <div className="flex items-center gap-2">
         <Link
           href="/premium"
-          className="flex items-center gap-1 border-2 border-lime/50 px-2 py-1.5 text-xs font-bold uppercase-wide text-lime"
+          className="btn-bubbly flex items-center gap-1 rounded-xl border-2 border-lime/50 bg-lime/10 px-2 py-1.5 text-xs font-bold uppercase-wide text-lime transition-colors hover:border-lime glow-border-hover"
         >
           <Crown size={14} />
           Premium

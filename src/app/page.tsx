@@ -97,39 +97,52 @@ export default function HomePage() {
 
   // --- LOGGED IN VIEW ---
   if (user) {
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    
     return (
       <div className="mx-auto w-full max-w-5xl px-4 py-10 md:px-8 md:py-16">
-        <section className="border-2 border-border bg-surface p-6 md:p-12">
-          <div className="flex items-center gap-4">
+        <section className="brut-card glow-border p-6 md:p-12 relative overflow-hidden">
+          {/* Decorative background glow */}
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
+          
+          <div className="flex items-center gap-5 relative z-10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
-              src={profile?.avatar_url || "https://via.placeholder.com/80"} 
+              src={profile?.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.id} 
               alt="Avatar" 
-              className="w-20 h-20 rounded-full border-2 border-accent object-cover" 
+              className="w-20 h-20 md:w-24 md:h-24 rounded-2xl border-2 border-accent object-cover glow-border shadow-lg" 
             />
             <div>
+              <p className="text-sm text-accent font-bold uppercase-wide mb-1">
+                {greeting}
+              </p>
               <h1 className="text-3xl md:text-4xl font-black tracking-tighter">
-                Welcome back, {profile?.username || "User"}
+                {profile?.username || "User"}
               </h1>
-              <p className="text-sm text-muted uppercase-wide mt-1">
+              <p className="text-sm text-muted uppercase-wide mt-2">
                 {profile?.is_premium ? (
-                  <span className="inline-flex items-center gap-1 text-accent">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-lime/10 border-2 border-lime/30 rounded-lg text-lime">
                     <Crown size={14} /> Premium Member
                   </span>
                 ) : (
-                  "Free Tier"
+                  <span className="inline-flex px-2 py-1 bg-surface-2 border-2 border-border rounded-lg">
+                    Free Tier
+                  </span>
                 )}
               </p>
             </div>
           </div>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-6 md:grid-cols-3 relative z-10">
             <Link
               href="/analyzer"
-              className="group flex flex-col border-2 border-border bg-surface p-6 transition-all hover:border-accent hover:brut-shadow-accent"
+              className="btn-bubbly group flex flex-col rounded-2xl border-2 border-border bg-surface p-6 transition-all hover:border-accent hover:bg-accent/5 glow-border-hover"
             >
-              <ScanFace size={28} className="text-accent" />
-              <h2 className="mt-4 text-xl font-black uppercase-wide">AI Analyzer</h2>
+              <div className="p-3 bg-accent/10 w-fit rounded-xl mb-2 group-hover:scale-110 transition-transform">
+                <ScanFace size={28} className="text-accent" />
+              </div>
+              <h2 className="mt-2 text-xl font-black uppercase-wide text-foreground">AI Analyzer</h2>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
                 Get your PSL rating & ascension plan
               </p>
@@ -140,10 +153,12 @@ export default function HomePage() {
             
             <Link
               href="/meeting"
-              className="group flex flex-col border-2 border-border bg-surface p-6 transition-all hover:border-accent hover:brut-shadow-accent"
+              className="btn-bubbly group flex flex-col rounded-2xl border-2 border-border bg-surface p-6 transition-all hover:border-accent hover:bg-accent/5 glow-border-hover"
             >
-              <Video size={28} className="text-accent" />
-              <h2 className="mt-4 text-xl font-black uppercase-wide">Meeting Room</h2>
+              <div className="p-3 bg-accent/10 w-fit rounded-xl mb-2 group-hover:scale-110 transition-transform">
+                <Video size={28} className="text-accent" />
+              </div>
+              <h2 className="mt-2 text-xl font-black uppercase-wide text-foreground">Meeting Room</h2>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
                 Talk to strangers & get live advice
               </p>
@@ -154,10 +169,12 @@ export default function HomePage() {
             
             <Link
               href="/profile"
-              className="group flex flex-col border-2 border-border bg-surface p-6 transition-all hover:border-accent hover:brut-shadow-accent"
+              className="btn-bubbly group flex flex-col rounded-2xl border-2 border-border bg-surface p-6 transition-all hover:border-accent hover:bg-accent/5 glow-border-hover"
             >
-              <User size={28} className="text-accent" />
-              <h2 className="mt-4 text-xl font-black uppercase-wide">Profile</h2>
+              <div className="p-3 bg-accent/10 w-fit rounded-xl mb-2 group-hover:scale-110 transition-transform">
+                <User size={28} className="text-accent" />
+              </div>
+              <h2 className="mt-2 text-xl font-black uppercase-wide text-foreground">Profile</h2>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
                 Manage account & themes
               </p>

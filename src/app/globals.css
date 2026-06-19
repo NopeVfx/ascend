@@ -2,7 +2,8 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root {
+/* Default Theme */
+:root, [data-theme="default"] {
   --background: #f4f4f4;
   --surface: #ffffff;
   --surface-2: #ececec;
@@ -14,8 +15,7 @@
   --lime: #4d7c0f;
   --danger: #dc2626;
 }
-
-.dark {
+.dark, [data-theme="default"].dark {
   --background: #0a0a0a;
   --surface: #111111;
   --surface-2: #181818;
@@ -26,6 +26,162 @@
   --accent-fg: #0a0a0a;
   --lime: #a3e635;
   --danger: #f87171;
+}
+
+/* Catppuccin (Latte / Mocha) */
+[data-theme="catppuccin"] {
+  --background: #eff1f5;
+  --surface: #e6e9ef;
+  --surface-2: #dce0e8;
+  --border: #ccd0da;
+  --foreground: #4c4f69;
+  --muted: #7c7f93;
+  --accent: #1e66f5;
+  --accent-fg: #eff1f5;
+  --lime: #40a02b;
+  --danger: #d20f39;
+}
+[data-theme="catppuccin"].dark {
+  --background: #1e1e2e;
+  --surface: #181825;
+  --surface-2: #11111b;
+  --border: #313244;
+  --foreground: #cdd6f4;
+  --muted: #a6adc8;
+  --accent: #89b4fa;
+  --accent-fg: #1e1e2e;
+  --lime: #a6e3a1;
+  --danger: #f38ba8;
+}
+
+/* Gruvbox (Light / Dark) */
+[data-theme="gruvbox"] {
+  --background: #fbf1c7;
+  --surface: #f2e5bc;
+  --surface-2: #ebdbb2;
+  --border: #d5c4a1;
+  --foreground: #3c3836;
+  --muted: #7c6f64;
+  --accent: #458588;
+  --accent-fg: #fbf1c7;
+  --lime: #98971a;
+  --danger: #cc241d;
+}
+[data-theme="gruvbox"].dark {
+  --background: #282828;
+  --surface: #3c3836;
+  --surface-2: #504945;
+  --border: #665c54;
+  --foreground: #ebdbb2;
+  --muted: #a89984;
+  --accent: #83a598;
+  --accent-fg: #282828;
+  --lime: #b8bb26;
+  --danger: #fb4934;
+}
+
+/* Everforest (Light / Dark) */
+[data-theme="everforest"] {
+  --background: #fdf6e3;
+  --surface: #f4f0d9;
+  --surface-2: #efebd4;
+  --border: #e6e2cc;
+  --foreground: #5c6a72;
+  --muted: #829181;
+  --accent: #3a94c5;
+  --accent-fg: #fdf6e3;
+  --lime: #8da101;
+  --danger: #f85552;
+}
+[data-theme="everforest"].dark {
+  --background: #2b3339;
+  --surface: #323c41;
+  --surface-2: #3a454a;
+  --border: #4a555b;
+  --foreground: #d3c6aa;
+  --muted: #859289;
+  --accent: #7fbbb3;
+  --accent-fg: #2b3339;
+  --lime: #a6b466;
+  --danger: #e67e80;
+}
+
+/* Nordic (Light / Dark) */
+[data-theme="nord"] {
+  --background: #eceff4;
+  --surface: #e5e9f0;
+  --surface-2: #d8dee9;
+  --border: #d8dee9;
+  --foreground: #2e3440;
+  --muted: #4c566a;
+  --accent: #5e81ac;
+  --accent-fg: #eceff4;
+  --lime: #a3be8c;
+  --danger: #bf616a;
+}
+[data-theme="nord"].dark {
+  --background: #2e3440;
+  --surface: #3b4252;
+  --surface-2: #434c5e;
+  --border: #4c566a;
+  --foreground: #eceff4;
+  --muted: #d8dee9;
+  --accent: #88c0d0;
+  --accent-fg: #2e3440;
+  --lime: #a3be8c;
+  --danger: #bf616a;
+}
+
+/* One Dark (Light / Dark) */
+[data-theme="onedark"] {
+  --background: #fafafa;
+  --surface: #f0f0f0;
+  --surface-2: #e5e5e5;
+  --border: #d3d3d3;
+  --foreground: #383a42;
+  --muted: #a0a1a7;
+  --accent: #4078f2;
+  --accent-fg: #fafafa;
+  --lime: #50a14f;
+  --danger: #e45649;
+}
+[data-theme="onedark"].dark {
+  --background: #282c34;
+  --surface: #2c313a;
+  --surface-2: #333842;
+  --border: #3e4451;
+  --foreground: #abb2bf;
+  --muted: #5c6370;
+  --accent: #61afef;
+  --accent-fg: #282c34;
+  --lime: #98c379;
+  --danger: #e06c75;
+}
+
+/* Tokyo Night (Day / Night) */
+[data-theme="tokyonight"] {
+  --background: #e1e2e7;
+  --surface: #d0d5e3;
+  --surface-2: #c4c8da;
+  --border: #a8aecb;
+  --foreground: #3760bf;
+  --muted: #848cb5;
+  --accent: #2e7de9;
+  --accent-fg: #e1e2e7;
+  --lime: #587539;
+  --danger: #f52a65;
+}
+[data-theme="tokyonight"].dark {
+  --background: #1a1b26;
+  --surface: #1f2335;
+  --surface-2: #24283b;
+  --border: #292e42;
+  --foreground: #c0caf5;
+  --muted: #565f89;
+  --accent: #7aa2f7;
+  --accent-fg: #1a1b26;
+  --lime: #9ece6a;
+  --danger: #f7768e;
 }
 
 @theme inline {
@@ -59,22 +215,34 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Brutalist primitives */
+/* Bubbly UI Primitives */
 .brut-border {
   border: 2px solid var(--border);
+  border-radius: 1rem;
 }
 
 .brut-card {
   background: var(--surface);
   border: 2px solid var(--border);
+  border-radius: 1rem;
 }
 
+/* Soft glow instead of brutalist shadow */
 .brut-shadow {
-  box-shadow: 4px 4px 0 0 var(--border);
+  box-shadow: 0 4px 14px 0 color-mix(in srgb, var(--foreground) 10%, transparent);
 }
 
 .brut-shadow-accent {
-  box-shadow: 4px 4px 0 0 var(--accent);
+  box-shadow: 0 4px 20px 0 color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.glow-border {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.glow-border-hover:hover {
+  box-shadow: 0 0 15px 2px color-mix(in srgb, var(--accent) 50%, transparent);
+  border-color: var(--accent);
 }
 
 .uppercase-wide {
@@ -82,12 +250,21 @@ body {
   letter-spacing: 0.08em;
 }
 
+/* Bubbly click animation */
+.btn-bubbly {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-bubbly:active {
+  transform: scale(0.95);
+}
+
 ::selection {
   background: var(--accent);
   color: var(--accent-fg);
 }
 
-/* Custom scrollbar for the brutalist look */
+/* Custom scrollbar for the bubbly look */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -98,6 +275,7 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--border);
   border: 2px solid var(--background);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent);

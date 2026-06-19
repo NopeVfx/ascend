@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState, useEffect } from "react";
 import type { Theme } from "@/lib/types";
+import { parseThemeId } from "@/lib/themes";
 
 interface ThemeContextValue {
   theme: Theme;
@@ -15,11 +16,21 @@ const STORAGE_KEY = "ascend-theme";
 function readInitialTheme(): Theme {
   if (typeof window === "undefined") return "dark";
   const stored = localStorage.getItem(STORAGE_KEY);
-  return stored === "light" || stored === "dark" ? stored : "dark";
+  return stored || "dark";
 }
 
 function applyTheme(theme: Theme) {
-  document.documentElement.classList.toggle("dark", theme === "dark");
+  if (typeof window === "undefined") return;
+  const { palette, mode } = parseThemeId(theme);
+  
+  document.documentElement.setAttribute("data-theme", palette);
+  
+  if (theme === "system") {
+    const isDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.classList.toggle("dark", isDark);
+  } else {
+    document.documentElement.classList.toggle("dark", mode === "dark");
+  }
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -35,12 +46,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const toggle = useCallback(() => {
     setThemeState((prev) => {
-      const next: Theme = prev === "dark" ? "light" : "dark";
+      const { palette, mode } = parseThemeId(prev);
+      const isSystemDark = prev === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const currentIsDark = mode === "dark" || isSystemDark;
+      
+      const nextMode = currentIsDark ? "light" : "dark";
+      const next = palette === "default" ? nextMode : `${palette}-${nextMode}`;
+      
       localStorage.setItem(STORAGE_KEY, next);
       applyTheme(next);
       return next;
     });
   }, []);
+
+  // System preference listener
+  useEffect(() => {
+    if (theme !== "system") return;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = () => applyTheme("system");
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggle }}>

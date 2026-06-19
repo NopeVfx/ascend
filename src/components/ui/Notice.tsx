@@ -16,7 +16,7 @@ export function Notice({
   return (
     <div
       className={cn(
-        "flex gap-3 border-2 bg-surface p-4 text-sm",
+        "flex gap-3 rounded-xl border-2 bg-surface p-4 text-sm glow-border",
         tone === "warn" ? "border-lime text-foreground" : "border-border text-muted",
         className,
       )}
