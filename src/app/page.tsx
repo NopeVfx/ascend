@@ -1,10 +1,15 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client"; // Make sure this path matches your project
 import {
   ArrowRight,
   Crown,
   ScanFace,
   ShieldCheck,
   Video,
+  User,
 } from "lucide-react";
 import { PREMIUM_PLAN } from "@/lib/stripe";
 
@@ -40,11 +45,116 @@ const STEPS = [
 ];
 
 export default function HomePage() {
+  const supabase = createClient();
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        setUser(user);
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+          
+        setProfile(profileData);
+      }
+      setLoading(false);
+    };
+
+    getUserData();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null);
+        if (!session?.user) {
+          setProfile(null);
+        }
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted">Loading...</p>
+      </div>
+    );
+  }
+
+  // --- LOGGED IN VIEW ---
+  if (user) {
+    return (
+      <div className="mx-auto w-full max-w-5xl px-4 py-10 md:px-8 md:py-16">
+        <div className="card-bubbly bg-surface p-8 mb-8 flex items-center gap-4">
+          <img 
+            src={profile?.avatar_url || "https://via.placeholder.com/80"} 
+            alt="Avatar" 
+            className="w-20 h-20 rounded-full border-2 border-accent object-cover" 
+          />
+          <div>
+            <h1 className="text-3xl md:text-4xl font-black tracking-tighter">
+              Welcome back, {profile?.username || "User"}
+            </h1>
+            <p className="text-sm text-muted uppercase-wide mt-1">
+              {profile?.is_premium ? (
+                <span className="inline-flex items-center gap-1 text-accent">
+                  <Crown size={14} /> Premium Member
+                </span>
+              ) : (
+                "Free Tier"
+              )}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Link
+            href="/analyzer"
+            className="card-bubbly p-6 flex flex-col items-center gap-3 text-center hover:bg-zinc-900"
+          >
+            <ScanFace size={40} className="text-accent" />
+            <span className="text-lg font-black uppercase-wide">AI Analyzer</span>
+            <span className="text-xs text-muted">Get your PSL rating & ascension plan</span>
+          </Link>
+          
+          <Link
+            href="/meeting"
+            className="card-bubbly p-6 flex flex-col items-center gap-3 text-center hover:bg-zinc-900"
+          >
+            <Video size={40} className="text-accent" />
+            <span className="text-lg font-black uppercase-wide">Meeting Room</span>
+            <span className="text-xs text-muted">Talk to strangers & get live advice</span>
+          </Link>
+          
+          <Link
+            href="/profile"
+            className="card-bubbly p-6 flex flex-col items-center gap-3 text-center hover:bg-zinc-900"
+          >
+            <User size={40} className="text-accent" />
+            <span className="text-lg font-black uppercase-wide">Profile</span>
+            <span className="text-xs text-muted">Manage account & themes</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // --- LOGGED OUT VIEW (Original Landing Page with Bubbly UI) ---
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-10 md:px-8 md:py-16">
       {/* Hero */}
-      <section className="border-2 border-border bg-surface p-6 md:p-12">
-        <p className="mb-4 inline-block border-2 border-border px-3 py-1 text-xs font-bold uppercase-wide text-accent">
+      <section className="card-bubbly p-6 md:p-12">
+        <p className="mb-4 inline-block btn-bubbly px-3 py-1 text-xs font-bold uppercase-wide text-accent bg-surface">
           Data-driven looksmaxxing
         </p>
         <h1 className="text-5xl font-black leading-[0.95] tracking-tighter md:text-7xl">
@@ -58,14 +168,14 @@ export default function HomePage() {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            href="/analyzer"
-            className="inline-flex items-center gap-2 border-2 border-accent bg-accent px-6 py-3.5 text-sm font-bold uppercase-wide text-accent-fg transition-all hover:brightness-110 active:translate-x-[2px] active:translate-y-[2px]"
+            href="/login"
+            className="btn-bubbly inline-flex items-center gap-2 bg-accent px-6 py-3.5 text-sm font-bold uppercase-wide text-accent-fg"
           >
             Start free analysis <ArrowRight size={18} />
           </Link>
           <Link
             href="/meeting"
-            className="inline-flex items-center gap-2 border-2 border-border bg-surface px-6 py-3.5 text-sm font-bold uppercase-wide transition-colors hover:border-accent hover:text-accent"
+            className="btn-bubbly inline-flex items-center gap-2 bg-surface px-6 py-3.5 text-sm font-bold uppercase-wide text-muted hover:text-accent"
           >
             <Video size={18} /> Meeting room
           </Link>
@@ -80,7 +190,7 @@ export default function HomePage() {
             <Link
               key={f.href}
               href={f.href}
-              className="group flex flex-col border-2 border-border bg-surface p-6 transition-all hover:border-accent hover:brut-shadow-accent"
+              className="card-bubbly group flex flex-col p-6"
             >
               <Icon size={28} className="text-accent" />
               <h2 className="mt-4 text-xl font-black uppercase-wide">
@@ -98,11 +208,11 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="mt-6 border-2 border-border bg-surface p-6 md:p-10">
+      <section className="mt-6 card-bubbly p-6 md:p-10">
         <h2 className="text-2xl font-black uppercase-wide">The protocol</h2>
         <ol className="mt-6 grid gap-4 md:grid-cols-4">
           {STEPS.map((step, i) => (
-            <li key={i} className="border-2 border-border p-4">
+            <li key={i} className="card-bubbly p-4">
               <span className="text-3xl font-black text-accent">
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -113,7 +223,7 @@ export default function HomePage() {
       </section>
 
       {/* Premium teaser */}
-      <section className="mt-6 flex flex-col items-start justify-between gap-6 border-2 border-lime bg-surface p-6 md:flex-row md:items-center md:p-10">
+      <section className="mt-6 card-bubbly flex flex-col items-start justify-between gap-6 p-6 md:flex-row md:items-center md:p-10">
         <div>
           <p className="inline-flex items-center gap-2 text-sm font-bold uppercase-wide text-lime">
             <Crown size={16} /> {PREMIUM_PLAN.name}
@@ -128,7 +238,7 @@ export default function HomePage() {
         </div>
         <Link
           href="/premium"
-          className="inline-flex items-center gap-2 border-2 border-lime bg-lime px-6 py-3.5 text-sm font-bold uppercase-wide text-accent-fg transition-all hover:brightness-110"
+          className="btn-bubbly inline-flex items-center gap-2 bg-lime px-6 py-3.5 text-sm font-bold uppercase-wide text-accent-fg"
         >
           Go premium <ArrowRight size={18} />
         </Link>
