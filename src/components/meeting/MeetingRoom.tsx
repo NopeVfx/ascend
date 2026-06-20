@@ -138,6 +138,16 @@ export function MeetingRoom() {
 
   useEffect(() => () => teardown(), [teardown]);
 
+  const active = status === "searching" || status === "connected";
+
+  useEffect(() => {
+    if (active && localVideoRef.current && localStreamRef.current) {
+      if (localVideoRef.current.srcObject !== localStreamRef.current) {
+        localVideoRef.current.srcObject = localStreamRef.current;
+      }
+    }
+  }, [active]);
+
   async function start() {
     setError(null);
     setStatus("requesting");
@@ -245,7 +255,6 @@ export function MeetingRoom() {
     setFriendMsg(error ? `Could not send request: ${error.message}` : "Friend request sent.");
   }
 
-  const active = status === "searching" || status === "connected";
 
   return (
     <div className="space-y-4">
