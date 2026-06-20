@@ -40,7 +40,7 @@ export function ThemePicker({ value, onChange }: { value: string, onChange: (v: 
         onClick={() => setShowCustom(!showCustom)} 
         className="btn-bubbly p-3 bg-surface-2 border-2 border-border rounded-xl text-sm font-bold uppercase-wide text-foreground transition-colors hover:border-accent glow-border-hover"
       >
-        {showCustom ? "Hide Custom Themes" : "Custom Themes (Gruvbox, Catppuccin, etc.)"}
+        {showCustom ? "Hide Custom Themes" : "Custom Themes"}
       </button>
 
       {showCustom && (

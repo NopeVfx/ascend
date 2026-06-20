@@ -119,10 +119,10 @@ export function Friends({
             {incoming.map((r) => (
               <li
                 key={r.friendshipId}
-                className="flex items-center justify-between border-2 border-border p-2"
+                className="flex items-center justify-between rounded-2xl border-2 border-border p-3 glow-border"
               >
-                <span className="flex items-center gap-2 text-sm font-bold">
-                  <span className="flex h-8 w-8 items-center justify-center border-2 border-border bg-surface-2 text-xs">
+                <span className="flex items-center gap-3 text-sm font-bold">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-border bg-surface-2 text-xs">
                     {initialsFromName(r.person.username)}
                   </span>
                   {r.person.username ?? "Anonymous"}
@@ -162,9 +162,9 @@ export function Friends({
             {friends.map((f) => (
               <li
                 key={f.id}
-                className="flex items-center gap-2 border-2 border-border px-3 py-2 text-sm font-bold"
+                className="flex items-center gap-3 rounded-2xl border-2 border-border px-4 py-3 text-sm font-bold glow-border"
               >
-                <span className="flex h-7 w-7 items-center justify-center border-2 border-border bg-surface-2 text-xs">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-border bg-surface-2 text-xs">
                   {initialsFromName(f.username)}
                 </span>
                 {f.username ?? "Anonymous"}

@@ -18,6 +18,7 @@ import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { Notice } from "@/components/ui/Notice";
 import { env, isMeetingConfigured } from "@/lib/env";
+import { cn } from "@/lib/utils";
 
 type Status =
   | "idle"
@@ -258,86 +259,130 @@ export function MeetingRoom() {
 
       {error ? <Notice tone="warn">{error}</Notice> : null}
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="relative aspect-video overflow-hidden border-2 border-border bg-black">
-          <video
-            ref={remoteVideoRef}
-            autoPlay
-            playsInline
-            className="h-full w-full object-cover"
-          />
-          <span className="absolute left-2 top-2 border-2 border-border bg-surface px-2 py-1 text-xs font-bold uppercase-wide">
-            {status === "connected" ? "Stranger" : "Waiting…"}
-          </span>
-          {status === "searching" ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-muted">
-              <Loader2 className="animate-spin text-accent" size={32} />
-              <span className="text-sm uppercase-wide">Finding a peer…</span>
-            </div>
-          ) : null}
-        </div>
-
-        <div className="relative aspect-video overflow-hidden border-2 border-border bg-black">
-          <video
-            ref={localVideoRef}
-            autoPlay
-            playsInline
-            muted
-            className="h-full w-full object-cover [transform:scaleX(-1)]"
-          />
-          <span className="absolute left-2 top-2 border-2 border-accent bg-surface px-2 py-1 text-xs font-bold uppercase-wide text-accent">
-            You
-          </span>
-        </div>
-      </div>
-
-      {friendMsg ? <Notice>{friendMsg}</Notice> : null}
-
-      <div className="flex flex-wrap items-center gap-3">
-        {!active ? (
+      {!active ? (
+        <div className="flex flex-col items-center justify-center p-12 border-2 border-border rounded-2xl bg-surface glow-border text-center mt-8">
+          <div className="p-5 bg-accent/10 rounded-full mb-6">
+            <VideoIcon size={48} className="text-accent" />
+          </div>
+          <h2 className="text-2xl font-black uppercase-wide mb-3">Ready to meet people?</h2>
+          <p className="text-muted max-w-md mb-8">
+            Click start below to enable your camera and microphone, and instantly connect with random peers for live advice.
+          </p>
           <Button
             onClick={start}
             size="lg"
+            className="w-full sm:w-auto btn-bubbly rounded-xl text-lg px-10 py-5 glow-border-hover"
             disabled={!isMeetingConfigured || status === "requesting"}
           >
             {status === "requesting" ? (
               <>
-                <Loader2 className="animate-spin" size={18} /> Starting…
+                <Loader2 className="animate-spin" size={24} /> Starting…
               </>
             ) : (
               <>
-                <Play size={18} /> Start
+                <Play size={24} /> Start Meeting
               </>
             )}
           </Button>
-        ) : (
-          <>
-            <Button onClick={next} variant="outline" size="lg">
-              <SkipForward size={18} /> Next
+        </div>
+      ) : null}
+
+      {active && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-md p-4 md:p-6 lg:p-8">
+          {friendMsg ? (
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[60] animate-in slide-in-from-top-4 fade-in w-full max-w-md px-4">
+              <Notice>{friendMsg}</Notice>
+            </div>
+          ) : null}
+          
+          <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0 relative z-10 w-full max-w-7xl mx-auto mt-2">
+            
+            {/* Remote Video */}
+            <div className="flex-1 relative rounded-3xl overflow-hidden border-2 border-border bg-black/50 glow-border shadow-2xl flex flex-col justify-center">
+              <video
+                ref={remoteVideoRef}
+                autoPlay
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <span className="absolute left-4 top-4 rounded-xl border-2 border-border/50 bg-black/60 backdrop-blur-sm px-3 py-1.5 text-xs font-bold uppercase-wide text-white">
+                {status === "connected" ? "Stranger" : "Waiting…"}
+              </span>
+              {status === "searching" ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/70 bg-black/40">
+                  <Loader2 className="animate-spin text-accent" size={40} />
+                  <span className="text-sm font-bold uppercase-wide tracking-wider">Finding a peer…</span>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Local Video */}
+            <div className="flex-1 relative rounded-3xl overflow-hidden border-2 border-accent/50 bg-black/50 glow-border shadow-2xl flex flex-col justify-center">
+              <video
+                ref={localVideoRef}
+                autoPlay
+                playsInline
+                muted
+                className="absolute inset-0 h-full w-full object-cover [transform:scaleX(-1)]"
+              />
+              <span className="absolute left-4 top-4 rounded-xl border-2 border-accent/50 bg-accent/20 backdrop-blur-sm px-3 py-1.5 text-xs font-bold uppercase-wide text-accent-fg">
+                You
+              </span>
+            </div>
+
+          </div>
+
+          {/* Controls */}
+          <div className="mt-4 md:mt-6 flex flex-wrap items-center justify-center gap-3 md:gap-4 bg-surface/80 backdrop-blur-xl border-2 border-border p-3 md:p-4 rounded-2xl glow-border relative z-10 w-fit mx-auto shadow-2xl">
+            <Button onClick={next} variant="outline" size="lg" className="btn-bubbly rounded-xl glow-border-hover">
+              <SkipForward size={20} /> <span className="hidden sm:inline">Skip</span>
             </Button>
-            <Button onClick={stop} variant="danger" size="lg">
-              <Square size={18} /> Stop
+            
+            <Button 
+              onClick={stop} 
+              variant="danger" 
+              size="lg" 
+              className="btn-bubbly rounded-xl shadow-[0_0_15px_rgba(255,0,0,0.3)] hover:shadow-[0_0_25px_rgba(255,0,0,0.5)] border-red-500/50 hover:border-red-500"
+            >
+              <Square size={20} /> <span className="hidden sm:inline">Exit</span>
             </Button>
-            <Button onClick={toggleMic} variant="ghost" aria-label="Toggle mic">
-              {micOn ? <Mic size={18} /> : <MicOff size={18} className="text-danger" />}
+            
+            <div className="w-px h-8 bg-border/50 mx-1 md:mx-2" />
+            
+            <Button 
+              onClick={toggleMic} 
+              variant="ghost" 
+              size="lg"
+              className={cn("btn-bubbly rounded-xl", !micOn && "bg-red-500/10 text-red-500 hover:bg-red-500/20")} 
+              aria-label="Toggle mic"
+            >
+              {micOn ? <Mic size={24} /> : <MicOff size={24} />}
             </Button>
-            <Button onClick={toggleCam} variant="ghost" aria-label="Toggle camera">
-              {camOn ? (
-                <VideoIcon size={18} />
-              ) : (
-                <VideoOff size={18} className="text-danger" />
-              )}
+            
+            <Button 
+              onClick={toggleCam} 
+              variant="ghost" 
+              size="lg"
+              className={cn("btn-bubbly rounded-xl", !camOn && "bg-red-500/10 text-red-500 hover:bg-red-500/20")} 
+              aria-label="Toggle camera"
+            >
+              {camOn ? <VideoIcon size={24} /> : <VideoOff size={24} />}
             </Button>
+            
+            <div className="w-px h-8 bg-border/50 mx-1 md:mx-2" />
+            
             <Button
               onClick={addFriend}
               variant="lime"
+              size="lg"
+              className="btn-bubbly rounded-xl glow-border-hover border-lime/50"
               disabled={status !== "connected"}
             >
-              <UserPlus size={18} /> Add friend
+              <UserPlus size={20} /> <span className="hidden sm:inline">Add friend</span>
             </Button>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

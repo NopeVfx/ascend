@@ -216,7 +216,7 @@ export function ProfileSettings() {
             <p className="text-sm text-muted">You are on the free tier.</p>
             <Link
               href="/premium"
-              className="border-2 border-lime bg-lime px-4 py-2 text-sm font-bold uppercase-wide text-accent-fg"
+              className="btn-bubbly rounded-xl border-2 border-lime bg-lime px-5 py-2.5 text-sm font-bold uppercase-wide text-accent-fg glow-border-hover"
             >
               Upgrade
             </Link>
