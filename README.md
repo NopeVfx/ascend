@@ -1,22 +1,18 @@
 # Ascend
 
 A dark-mode, brutalist-inspired web app for aesthetic optimization and peer-to-peer
-advice. Built with **Next.js 16 (App Router)**, **Tailwind CSS v4**, **Supabase**,
-**Google Gemini / Z.ai (GLM) / Anthropic / OpenAI**, **PeerJS (WebRTC)**, and **Stripe**.
-
-Every integration is optional — the app boots and degrades gracefully, surfacing a
-"connect this service" state wherever a key is missing.
+advice. Built with **Next.js 16**, **Tailwind CSS v4**, **Supabase**, **PeerJS**, and **Stripe**.
 
 ## Features
 
-1. **Auth & Profiles** — Supabase Auth (Google + email/password), optional TOTP 2FA
-   (off by default), username, avatar upload, and a dark/light theme toggle (dark by
+1. **Auth & Profile** — Supabase Auth (Google + email/password), optional TOTP 2FA
+   (off by default), username, avatar upload, and a dark/light + custom theme toggle (dark by
    default, persisted to the profile).
 2. **AI Face Analyzer** — Upload a photo and/or type a prompt. Returns a PSL /10
    rating, per-feature sub-scores, genuine strengths, and a prioritized, evidence-based
    ascension plan. Free tier uses Gemini; premium tries Z.ai (GLM) → Anthropic (Claude)
    → OpenAI, in configurable order.
-3. **Meeting Room** — Omegle-style random video pairing over PeerJS WebRTC with a
+3. **Meeting Room** — Random video pairing over PeerJS WebRTC with a
    small matchmaking signaling server. Start / Next / Stop, mic & camera toggles, and
    an Add Friend button (prompts login if signed out).
 4. **Premium** — Stripe Checkout subscription. A successful purchase flips
