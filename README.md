@@ -1,7 +1,6 @@
 # Ascend
 
-A dark-mode, brutalist-inspired web app for aesthetic optimization and peer-to-peer
-advice. Built with **Next.js 16**, **Tailwind CSS v4**, **Supabase**, **PeerJS**, and **Stripe**.
+A web app built off of inspirational projects from the looksmaxxing community including Omoggle, OfficialChadRankings, and UMax. Built with **Next.js 16**, **Tailwind CSS v4**, **Supabase**, **PeerJS**, and **Stripe**.
 
 ## Features
 
