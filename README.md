@@ -38,8 +38,8 @@ npm run server               # matchmaking/PeerJS server on :3001 (separate term
 
 ### Environment
 
-See `.env.example` for the full, documented list. Nothing is required to boot; add
-keys to light up each feature:
+See `.env.example` for the full, documented list.Optionally add
+keys to enable certain features:
 
 - **Supabase**: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
   `SUPABASE_SERVICE_ROLE_KEY`
@@ -79,15 +79,3 @@ trigger, and a public `avatars` storage bucket. For Google OAuth, add
 | `npm run server` | Matchmaking + PeerJS signaling server |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | `tsc --noEmit` |
-
-## Project layout
-
-```
-src/
-  app/            routes (home, login, analyzer, meeting, premium, profile) + api/
-  components/     shell (nav), providers, ui, and feature components
-  lib/            env, types, utils, supabase clients, ai router, stripe helpers
-  proxy.ts        session refresh + protected-route guard (Next 16 proxy)
-server/index.mjs  Express + ws matchmaking and PeerJS signaling
-supabase/         schema.sql
-```
